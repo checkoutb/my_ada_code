@@ -1,5 +1,13 @@
-# Object file
-*.o
+# ignore all
+*
 
-# Ada Library Information
-*.ali
+# don't ignore directory
+!*/
+
+# don't ignore
+!*.md
+!*.adb
+!*.ads
+!*.c
+!*.h
+!*.cpp
