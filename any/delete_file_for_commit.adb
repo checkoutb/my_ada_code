@@ -11,15 +11,18 @@ with Ada.Strings.Fixed;
 -- 
 -- 。。编译器说 没有 Is_Directory。 我在文档上确实没找到。 只有个 Kind
 -- 
+-- 要复制到 顶层目录，并且改下后缀 使之不会被删除。。
+-- `mv delete_file_for_commit ../del.ignore`
+--
+-- 删出后 intro to ada 只有92k。 而且 ch17下 有2个 b~ 开头的文件，这2个文件就28k了，这2个应该是自动生成的。不管它。
 
 
 procedure Delete_File_For_Commit is
-    Dir: constant String := "../introduction_to_ada/ch17_interface_c";
+    Dir: constant String := ".";
 
     package String_Sets is new Ada.Containers.Indefinite_Ordered_Sets(Element_Type => String);
     use String_Sets;
     No_Delete_Pfx: Set;
-
 
 
     -- Depth 本来是为了跳过 .gitignore 所在层次的文件。 还是自己写死算了。
@@ -30,7 +33,7 @@ procedure Delete_File_For_Commit is
         Search: Search_Type;
         -- Tails : String(1..3);     -- 直接3了，因为 .md 是3个字符。再多的话就多一个不可控字符了。 3个字符直接Set处理算了。 。不行  .h  .c 呢。还是得取后缀
         Dot_Idx : Natural;
-        Pfx: String(1..6) := (others => ' ');
+        -- Pfx: String(1..6) := (others => ' ');
     begin
         Put_Line("got path: " & Path);
         
@@ -70,8 +73,8 @@ procedure Delete_File_For_Commit is
                 end if;
                 
                 -- delete 
-                Put_Line("delete: " & Simple_Name(Dir_Entry));
-
+                Put_Line("delete: " & Full_Name(Dir_Entry));
+                Delete_File(Full_Name(Dir_Entry));
             end if;
 
             <<goto_Tag_1>>
@@ -88,6 +91,7 @@ begin
     No_Delete_Pfx.Insert(".c");
     No_Delete_Pfx.Insert(".h");
     No_Delete_Pfx.Insert(".cpp");
+    No_Delete_Pfx.Insert(".ignore");
 
     Dfs_Delete_File(Dir, 0);
 
